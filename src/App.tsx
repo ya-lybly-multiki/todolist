@@ -1,7 +1,7 @@
 import React from "react";
 import './App.css';
 import {Todolist} from './Todolist';
-import {Input} from "./Components/Input";
+import {Input} from "./Components/utils/Input";
 import {useDispatch, useSelector} from "react-redux";
 import {RootReducerType} from "./Store/Store";
 import {addNewTodolistTasksAC} from "./Redux/TaskReducer";

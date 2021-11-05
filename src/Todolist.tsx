@@ -1,12 +1,14 @@
 import React, {ChangeEvent} from 'react';
 
-import Button from "./Components/Button";
+import Button from "./Components/utils/Button";
 
-import {Input} from "./Components/Input";
+import {Input} from "./Components/utils/Input";
 import {changeFilterAC, FilterValuesType, removeTodolistAC, todoListsType} from "./Redux/TodolistReducer";
 import {useDispatch, useSelector} from "react-redux";
 import {RootReducerType} from "./Store/Store";
 import {addTaskAC, changeStatusAC, removeTaskAC, } from "./Redux/TaskReducer";
+import {EditableSpan} from "./Components/utils/EditableSpan";
+import {Task} from "./Components/Task/Task";
 
 export type TaskType = {
     id: string
@@ -69,7 +71,9 @@ export function Todolist({todolist}:PropsType) {
     const removeTodolistBtn = () => removeTodolist(todolist.id)
 
     return <div>
-        <h3>{todolist.title}</h3>
+        <h3>
+            <EditableSpan title={todolist.title}/>
+        </h3>
 
         <Button callBack={removeTodolistBtn} name={"x"}/>
         <Input callBack={addTaskHandlerForAddTitle}/>
@@ -80,14 +84,14 @@ export function Todolist({todolist}:PropsType) {
                         changeStatus(todolist.id,t.id, e.currentTarget.checked);
                     }
 
-                    return <li key={t.id} className={t.isDone ? "is-done" : ""}>
-                        <input type="checkbox"
-                               onChange={onChangeHandler}
-                               checked={t.isDone}/>
-                        <span>{t.title}</span>
-                        <Button  callBack={()=>onClickHandlerForRemove(t.id)} name={"X"}/>
+                    return <Task
+                        id={t.id}
+                        isDone={t.isDone}
+                        title={t.title}
+                        onClickHandlerForRemove={onClickHandlerForRemove}
+                        key={t.id}
+                        checkedFunc={onChangeHandler}/>
 
-                    </li>
                 })
             }
         </ul>

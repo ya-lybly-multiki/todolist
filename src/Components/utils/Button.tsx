@@ -1,5 +1,5 @@
 import React, {ButtonHTMLAttributes,  DetailedHTMLProps,} from "react";
-import "./../App.css"
+import "../../App.css"
 
 
 type DefaultButtonPropsType = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
