@@ -14,10 +14,6 @@ type PropsType = {
 
 export function Task ({checkedFunc,onClickHandlerForRemove,title,id,isDone}:PropsType) {
 
-    // const deleteTask = () => {
-    //     onClickHandlerForRemove(id)
-    // }
-
     return (
         <li>
             <input type={"checkbox"} checked={isDone} onChange={checkedFunc}/>

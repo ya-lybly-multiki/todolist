@@ -1,26 +1,17 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
-import Button from "./Button";
+
 
 type PropsType = {
-    callBack: (title: string) => void
-
+    title?:string
+    setTitle:(title:string)=>void
 }
 
-export function Input(props: PropsType) {
+export function Input({setTitle,title}: PropsType) {
 
-    let [title, setTitle] = useState("")
+
     let [error, setError] = useState<string | null>(null)
 
-    const addTask = () => {
-        let newTitle = title.trim();
-        if (newTitle !== "") {
-            props.callBack(newTitle);
-            setTitle("");
-        } else {
-            setError("Title is required");
-        }
 
-    }
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
@@ -29,7 +20,7 @@ export function Input(props: PropsType) {
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
 
         if (e.charCode === 13) {
-            addTask();
+            // addTask();
         }
     }
 
@@ -40,7 +31,7 @@ export function Input(props: PropsType) {
                    onKeyPress={onKeyPressHandler}
                    className={error ? "error" : ""}
             />
-            <Button callBack={addTask} name={"+"}></Button>
+
 
         </div>
 

@@ -8,6 +8,7 @@ type PropsType = DefaultButtonPropsType &{
     name: string
     filter?: string
     callBack:()=>void
+
 }
 
 

@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 
 import Button from "./Components/utils/Button";
 
@@ -22,6 +22,9 @@ type PropsType = {
 
 
 export function Todolist({todolist}:PropsType) {
+
+    const [title,setTitle] = useState("")
+
     let dispatch=useDispatch();
 
     const tasks = useSelector<RootReducerType, Array<TaskType>>(state => state.tasks[todolist.id])
@@ -33,6 +36,7 @@ export function Todolist({todolist}:PropsType) {
     if (todolist.filter === "completed") {
         tasksForTodolist = tasks.filter(t => t.isDone);
     }
+
     const addTaskHandlerForAddTitle = (title:string) => {
         addTask(todolist.id,title)
     }
@@ -47,7 +51,7 @@ export function Todolist({todolist}:PropsType) {
 
     }
 
-    function addTask(todolistID: string, title: string) {
+    function addTask(todolistID: string,title:string) {
         dispatch(addTaskAC(todolistID,title))
 
     }
@@ -76,7 +80,8 @@ export function Todolist({todolist}:PropsType) {
         </h3>
 
         <Button callBack={removeTodolistBtn} name={"x"}/>
-        <Input callBack={addTaskHandlerForAddTitle}/>
+        <Input title={title} setTitle={setTitle}/>
+        <Button name={"+"} callBack={()=> {addTaskHandlerForAddTitle(title)}}/>
         <ul>
             {
                 tasksForTodolist.map(t => {
