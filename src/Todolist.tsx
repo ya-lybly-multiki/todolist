@@ -1,59 +1,83 @@
-import React, {ChangeEvent, useState} from 'react';
-import {FilterValuesType} from './App';
-import Button from "./Components/Button";
-import {InputWithButton} from "./Components/InputWithButton";
-import {Input} from "./Components/Input";
+import React, {ChangeEvent} from 'react';
 
-type TaskType = {
+import Button from "./Components/Button";
+
+import {Input} from "./Components/Input";
+import {changeFilterAC, FilterValuesType, removeTodolistAC, todoListsType} from "./Redux/TodolistReducer";
+import {useDispatch, useSelector} from "react-redux";
+import {RootReducerType} from "./Store/Store";
+import {addTaskAC, changeStatusAC, removeTaskAC, } from "./Redux/TaskReducer";
+
+export type TaskType = {
     id: string
     title: string
     isDone: boolean
 }
 
 type PropsType = {
-    todolistID:string
-    title: string
-    tasks: Array<TaskType>
-    removeTask: (todolistID:string,taskId: string) => void
-    changeFilter: (todolistID: string,value: FilterValuesType) => void
-    addTask: (todolistID: string,title: string) => void
-    changeTaskStatus: (todolistID: string,taskId: string, isDone: boolean) => void
-    filter: FilterValuesType
-    removeTodolist: (todolistID: string) => void
+    todolist:todoListsType
 }
 
-export function Todolist(props: PropsType) {
 
-    let [title, setTitle] = useState("")
-    let [error, setError] = useState<string | null>(null)
+export function Todolist({todolist}:PropsType) {
+    let dispatch=useDispatch();
 
+    const tasks = useSelector<RootReducerType, Array<TaskType>>(state => state.tasks[todolist.id])
+    let tasksForTodolist = [...tasks];
 
-    const addTaskHandlerForAddTitle = () => {
-        props.addTask(props.todolistID, title)
+    if (todolist.filter === "active") {
+        tasksForTodolist = tasks.filter(t => !t.isDone);
+    }
+    if (todolist.filter === "completed") {
+        tasksForTodolist = tasks.filter(t => t.isDone);
+    }
+    const addTaskHandlerForAddTitle = (title:string) => {
+        addTask(todolist.id,title)
     }
 
     const tsarFoo = (value: FilterValuesType) => {
-        props.changeFilter(props.todolistID,value)
+        changeFilter(todolist.id,value)
     }
 
-    const addTaskForEnter = () => {
-      props.addTask(props.todolistID, title)
+
+    function removeTask(todolistID: string, id: string) {
+        dispatch(removeTaskAC(todolistID,id))
+
     }
 
-    const onClickHandlerForRemove = (tId:string) => props.removeTask(props.todolistID, tId)
+    function addTask(todolistID: string, title: string) {
+        dispatch(addTaskAC(todolistID,title))
 
-    const removeTodolistBtn = () => props.removeTodolist(props.todolistID)
+    }
+
+    function changeStatus(todolistID: string,taskId: string, isDone: boolean) {
+        dispatch(changeStatusAC(todolistID,taskId,isDone))
+
+    }
+
+    function removeTodolist (todolistID: string) {
+        dispatch(removeTodolistAC(todolistID))
+    }
+
+    function changeFilter(todolistID: string, value: FilterValuesType) {
+
+        dispatch(changeFilterAC(todolistID,value))
+    }
+
+    const onClickHandlerForRemove = (tId:string) => removeTask(todolist.id, tId)
+
+    const removeTodolistBtn = () => removeTodolist(todolist.id)
 
     return <div>
-        <h3>{props.title}</h3>
-        <Button  callBack={removeTodolistBtn} name={"X"}/>
-        <Input title={title} setTitle={setTitle} addTask={addTaskForEnter} todolistID={props.todolistID}/>
-        <Button callBack={addTaskHandlerForAddTitle} name={"+"}/>
+        <h3>{todolist.title}</h3>
+
+        <Button callBack={removeTodolistBtn} name={"x"}/>
+        <Input callBack={addTaskHandlerForAddTitle}/>
         <ul>
             {
-                props.tasks.map(t => {
+                tasksForTodolist.map(t => {
                     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-                        props.changeTaskStatus(props.todolistID,t.id, e.currentTarget.checked);
+                        changeStatus(todolist.id,t.id, e.currentTarget.checked);
                     }
 
                     return <li key={t.id} className={t.isDone ? "is-done" : ""}>
@@ -69,9 +93,9 @@ export function Todolist(props: PropsType) {
         </ul>
         <div>
 
-            <Button callBack={() => tsarFoo("all")} name={"all"} filter={props.filter} />
-            <Button callBack={() => tsarFoo("active")} name={"active"} filter={props.filter} />
-            <Button callBack={() => tsarFoo("completed")} name={"completed"}  filter={props.filter} />
+            <Button callBack={() => tsarFoo("all")} name={"all"} filter={todolist.filter} />
+            <Button callBack={() => tsarFoo("active")} name={"active"} filter={todolist.filter} />
+            <Button callBack={() => tsarFoo("completed")} name={"completed"}  filter={todolist.filter} />
         </div>
     </div>
 }

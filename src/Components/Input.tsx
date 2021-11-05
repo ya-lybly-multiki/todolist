@@ -1,33 +1,48 @@
-import React, {ChangeEvent, KeyboardEvent} from "react";
+import React, {ChangeEvent, KeyboardEvent, useState} from "react";
+import Button from "./Button";
 
 type PropsType = {
-    title: string
-    setTitle:(title:string) => void
-    addTask: () => void
-    todolistID:string
+    callBack: (title: string) => void
+
 }
 
-export function Input (props:PropsType) {
+export function Input(props: PropsType) {
 
+    let [title, setTitle] = useState("")
+    let [error, setError] = useState<string | null>(null)
 
+    const addTask = () => {
+        let newTitle = title.trim();
+        if (newTitle !== "") {
+            props.callBack(newTitle);
+            setTitle("");
+        } else {
+            setError("Title is required");
+        }
+
+    }
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        props.setTitle(e.currentTarget.value)
+        setTitle(e.currentTarget.value)
     }
+
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        // setError(null);
+
         if (e.charCode === 13) {
-            props.addTask()
+            addTask();
         }
     }
 
     return (
-
-            <input value={props.title}
+        <div>
+            <input value={title}
                    onChange={onChangeHandler}
                    onKeyPress={onKeyPressHandler}
-                   // className={error ? "error" : ""}
+                   className={error ? "error" : ""}
             />
+            <Button callBack={addTask} name={"+"}></Button>
+
+        </div>
 
     )
 }
