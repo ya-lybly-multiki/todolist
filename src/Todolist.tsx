@@ -23,6 +23,7 @@ type PropsType = {
 
 export function Todolist({todolist}:PropsType) {
 
+    let [error, setError] = useState<string | null>(null)
     const [title,setTitle] = useState("")
 
     let dispatch=useDispatch();
@@ -38,7 +39,13 @@ export function Todolist({todolist}:PropsType) {
     }
 
     const addTaskHandlerForAddTitle = (title:string) => {
-        addTask(todolist.id,title)
+        if (title.trim() !== "") {
+            addTask(todolist.id, title)
+            setTitle("")
+            setError(null)
+        } else {
+            setError("Title is required")
+        }
     }
 
     const tsarFoo = (value: FilterValuesType) => {
@@ -72,6 +79,7 @@ export function Todolist({todolist}:PropsType) {
 
     const onClickHandlerForRemove = (tId:string) => removeTask(todolist.id, tId)
 
+
     const removeTodolistBtn = () => removeTodolist(todolist.id)
 
     return <div>
@@ -80,7 +88,7 @@ export function Todolist({todolist}:PropsType) {
         </h3>
 
         <Button callBack={removeTodolistBtn} name={"x"}/>
-        <Input title={title} setTitle={setTitle}/>
+        <Input error={error} title={title} setTitle={setTitle} callBack={(title:string)=>{addTaskHandlerForAddTitle(title)}}/>
         <Button name={"+"} callBack={()=> {addTaskHandlerForAddTitle(title)}}/>
         <ul>
             {

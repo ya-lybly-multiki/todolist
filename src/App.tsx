@@ -14,26 +14,37 @@ import Button from "./Components/utils/Button";
 
 function App() {
 
-    const [title,setTitle]=useState("")
-    let dispatch=useDispatch();
+    const [title, setTitle] = useState("")
+    let [error, setError] = useState<string | null>(null)
 
-    let todolist = useSelector<RootReducerType,Array<todoListsType>>(state => state.todolist)
+    let dispatch = useDispatch();
+
+    let todolist = useSelector<RootReducerType, Array<todoListsType>>(state => state.todolist)
 
 
-
-    function addTodolist (title:string) {
+    function addTodolist(title: string) {
         let newTaskId = v1();
-        dispatch(addTodolistAC(title,newTaskId))
-        dispatch(addNewTodolistTasksAC(newTaskId))
+        if (title.trim() !== "") {
+            dispatch(addTodolistAC(title, newTaskId))
+            dispatch(addNewTodolistTasksAC(newTaskId))
+            setTitle("")
+            setError(null)
+        } else {
+            setError("Title is required")
         }
+    }
 
 
     return (
         <div className="App">
-        <div>
-            <Input  title={title} setTitle={setTitle} />
-            <Button callBack={()=>{addTodolist(title)}} name={"+"}/>
-        </div>
+            <div>
+                <Input title={title} error={error} setTitle={setTitle} callBack={(title: string) => {
+                    addTodolist(title)
+                }}/>
+                <Button callBack={() => {
+                    addTodolist(title)
+                }} name={"+"}/>
+            </div>
 
             {todolist.map(todolist => <Todolist key={todolist.id} todolist={todolist}/>)}
         </div>

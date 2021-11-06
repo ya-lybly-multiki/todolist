@@ -15,6 +15,7 @@ type PropsType = DefaultButtonPropsType &{
 const Button = ({name, callBack,filter,...restProps}:PropsType) => {
 
     const Function = () => {
+
         callBack()
     }
 
