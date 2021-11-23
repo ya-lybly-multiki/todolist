@@ -38,15 +38,13 @@ function App() {
     return (
         <div className="App">
             <div>
-                <Input title={title} error={error} setTitle={setTitle} callBack={(title: string) => {
-                    addTodolist(title)
-                }}/>
+                <Input title={title} error={error} setTitle={setTitle} callBack={(title: string) => {addTodolist(title)}}/>
                 <Button callBack={() => {
                     addTodolist(title)
-                }} name={"+"}/>
+                }} children={"+"}/>
             </div>
 
-            {todolist.map(todolist => <Todolist key={todolist.id} todolist={todolist}/>)}
+            {todolist.map(todolist => <Todolist key={todolist.id} todolistID={todolist.id}/>)}
         </div>
     );
 }

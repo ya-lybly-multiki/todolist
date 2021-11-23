@@ -18,7 +18,7 @@ export function Task ({checkedFunc,onClickHandlerForRemove,title,id,isDone}:Prop
         <li>
             <input type={"checkbox"} checked={isDone} onChange={checkedFunc}/>
             <EditableSpan title={title}/>
-            <Button  callBack={()=>onClickHandlerForRemove(id)} name={"X"}/>
+            <Button  callBack={()=>onClickHandlerForRemove(id)} children={"X"}/>
         </li>
     )
 }

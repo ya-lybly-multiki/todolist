@@ -5,25 +5,22 @@ import "../../App.css"
 type DefaultButtonPropsType = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 
 type PropsType = DefaultButtonPropsType &{
-    name: string
+    children: string
     filter?: string
     callBack:()=>void
 
 }
 
 
-const Button = ({name, callBack,filter,...restProps}:PropsType) => {
+const Button = ({children, callBack,filter,...restProps}:PropsType) => {
 
-    const Function = () => {
 
-        callBack()
-    }
 
-    const classBtn = filter === name ? "active-filter" : ""
+    const classBtn = filter === children ? "active-filter" : ""
 
     return (
         <button
-            className={classBtn} onClick={Function}>{name}</button>
+            className={classBtn} onClick={callBack}>{children}</button>
     )
 }
 

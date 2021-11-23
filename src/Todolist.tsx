@@ -6,7 +6,7 @@ import {Input} from "./Components/utils/Input";
 import {changeFilterAC, FilterValuesType, removeTodolistAC, todoListsType} from "./Redux/TodolistReducer";
 import {useDispatch, useSelector} from "react-redux";
 import {RootReducerType} from "./Store/Store";
-import {addTaskAC, changeStatusAC, removeTaskAC, } from "./Redux/TaskReducer";
+import {addTaskAC, changeStatusAC, removeTaskAC,} from "./Redux/TaskReducer";
 import {EditableSpan} from "./Components/utils/EditableSpan";
 import {Task} from "./Components/Task/Task";
 
@@ -17,102 +17,76 @@ export type TaskType = {
 }
 
 type PropsType = {
-    todolist:todoListsType
+    todolistID: string
 }
 
 
-export function Todolist({todolist}:PropsType) {
+export function Todolist({todolistID}: PropsType) {
 
     let [error, setError] = useState<string | null>(null)
-    const [title,setTitle] = useState("")
+    const [title, setTitle] = useState("")
 
-    let dispatch=useDispatch();
+    let dispatch = useDispatch();
 
-    const tasks = useSelector<RootReducerType, Array<TaskType>>(state => state.tasks[todolist.id])
-    let tasksForTodolist = [...tasks];
+    const todo = useSelector<RootReducerType, todoListsType>(state => state.todolist.filter(t => t.id === todolistID)[0])
+    const tasks = useSelector<RootReducerType, Array<TaskType>>(state => state.tasks[todolistID])
 
-    if (todolist.filter === "active") {
+    let allTodoListTasks = tasks;
+    let tasksForTodolist = allTodoListTasks;
+
+    if (todo.filter === "active") {
         tasksForTodolist = tasks.filter(t => !t.isDone);
     }
-    if (todolist.filter === "completed") {
+    if (todo.filter === "completed") {
         tasksForTodolist = tasks.filter(t => t.isDone);
     }
 
-    const addTaskHandlerForAddTitle = (title:string) => {
+
+    const addTaskHandlerForAddTitle = (title: string) => {
         if (title.trim() !== "") {
-            addTask(todolist.id, title)
+            dispatch(addTaskAC(todolistID, title))
             setTitle("")
             setError(null)
         } else {
             setError("Title is required")
         }
     }
-
     const tsarFoo = (value: FilterValuesType) => {
-        changeFilter(todolist.id,value)
+        dispatch(changeFilterAC(todolistID, value))
     }
-
-
-    function removeTask(todolistID: string, id: string) {
-        dispatch(removeTaskAC(todolistID,id))
-
-    }
-
-    function addTask(todolistID: string,title:string) {
-        dispatch(addTaskAC(todolistID,title))
-
-    }
-
-    function changeStatus(todolistID: string,taskId: string, isDone: boolean) {
-        dispatch(changeStatusAC(todolistID,taskId,isDone))
-
-    }
-
-    function removeTodolist (todolistID: string) {
-        dispatch(removeTodolistAC(todolistID))
-    }
-
-    function changeFilter(todolistID: string, value: FilterValuesType) {
-
-        dispatch(changeFilterAC(todolistID,value))
-    }
-
-    const onClickHandlerForRemove = (tId:string) => removeTask(todolist.id, tId)
-
-
-    const removeTodolistBtn = () => removeTodolist(todolist.id)
 
     return <div>
         <h3>
-            <EditableSpan title={todolist.title}/>
+            <EditableSpan title={title}/>
         </h3>
 
-        <Button callBack={removeTodolistBtn} name={"x"}/>
-        <Input error={error} title={title} setTitle={setTitle} callBack={(title:string)=>{addTaskHandlerForAddTitle(title)}}/>
-        <Button name={"+"} callBack={()=> {addTaskHandlerForAddTitle(title)}}/>
+        <Button callBack={() => { dispatch(removeTodolistAC(todolistID))}} children={"x"}/>
+        <Input error={error} title={title} setTitle={setTitle} callBack={(title: string) => {
+            addTaskHandlerForAddTitle(title)
+        }}/>
+        <Button  callBack={() => {
+            addTaskHandlerForAddTitle(title)}} children={"+"}/>
         <ul>
             {
                 tasksForTodolist.map(t => {
-                    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-                        changeStatus(todolist.id,t.id, e.currentTarget.checked);
-                    }
-
                     return <Task
                         id={t.id}
                         isDone={t.isDone}
                         title={t.title}
-                        onClickHandlerForRemove={onClickHandlerForRemove}
+                        onClickHandlerForRemove={(tId) => {
+                            dispatch(removeTaskAC(todolistID, tId))}}
                         key={t.id}
-                        checkedFunc={onChangeHandler}/>
-
+                        checkedFunc={(e) => {
+                            dispatch(changeStatusAC(todolistID, t.id, e.currentTarget.checked))
+                        }}/>
                 })
             }
         </ul>
         <div>
 
-            <Button callBack={() => tsarFoo("all")} name={"all"} filter={todolist.filter} />
-            <Button callBack={() => tsarFoo("active")} name={"active"} filter={todolist.filter} />
-            <Button callBack={() => tsarFoo("completed")} name={"completed"}  filter={todolist.filter} />
+            <Button callBack={() => tsarFoo("all")} children={"all"} filter={todo.filter}/>
+            <Button callBack={() => tsarFoo("active")} children={"active"} filter={todo.filter}/>
+            <Button callBack={() => tsarFoo("completed")} children={"completed"} filter={todo.filter}/>
         </div>
     </div>
 }
