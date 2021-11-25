@@ -9,21 +9,16 @@ type PropsType = {
     error:string | null
 }
 
-export function Input({setTitle,title,error,...props}: PropsType) {
-
-
-
+export const Input = React.memo (({setTitle,title,error,callBack}: PropsType) => {
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
     }
-
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.charCode === 13 ) {
-            props.callBack(title)
+            callBack(title)
         }
     }
-
     return (
         <div>
             <input value={title}
@@ -36,4 +31,4 @@ export function Input({setTitle,title,error,...props}: PropsType) {
         </div>
 
     )
-}
+})

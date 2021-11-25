@@ -6,23 +6,22 @@ type DefaultButtonPropsType = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonE
 
 type PropsType = DefaultButtonPropsType &{
     children: string
-    filter?: string
+
     callBack:()=>void
 
 }
 
 
-const Button = ({children, callBack,filter,...restProps}:PropsType) => {
+const Button = React.memo( ({children, callBack,...restProps}:PropsType) => {
 
 
 
-    const classBtn = filter === children ? "active-filter" : ""
+
 
     return (
-        <button
-            className={classBtn} onClick={callBack}>{children}</button>
+        <button onClick={callBack} {...restProps}>{children}</button>
     )
 }
-
+)
 
 export default Button;

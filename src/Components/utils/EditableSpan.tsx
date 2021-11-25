@@ -5,12 +5,14 @@ type PropsType = {
 }
 
 
-export function EditableSpan ({title}:PropsType) {
+export const EditableSpan = React.memo( ({title}:PropsType) => {
+
+    console.log("lol")
 
     const [edit, setEdit] = useState<boolean>(false)
     const [newTitle,setNewTitle] = useState(title)
 
-    const clicklSpan = () => {
+    const clickSpan = () => {
        setEdit(true)
     }
 
@@ -27,9 +29,9 @@ export function EditableSpan ({title}:PropsType) {
        ?   <input onChange={onChangeInput}
                   onBlur={addNewTitle}
                   value={newTitle} autoFocus/>
-        :   <span onDoubleClick={clicklSpan}>{newTitle}</span>
+        :   <span onDoubleClick={clickSpan}>{newTitle}</span>
 
 
 
     )
-}
+})
